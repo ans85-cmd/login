@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adminbereich</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #eef2f3;
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: #fff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 10px;
+            margin-bottom: 8px;
+            background: #f9f9f9;
+            border-radius: 6px;
+        }
+
+        .btn-delete {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 6px 12px;
+            cursor: pointer;
+        }
+
+        .btn-delete:hover {
+            background-color: #c0392b;
+        }
+
+        .btn-logout {
+            margin-top: 20px;
+            background-color: #2980b9;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn-logout:hover {
+            background-color: #1c5980;
+        }
+
+        .notice {
+            text-align: center;
+            margin-top: 30px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Admin: Benutzerliste</h1>
+        <ul id="userList"></ul>
+        <button class="btn-logout" onclick="logout()">Abmelden</button>
+        <p class="notice">Nur 'admin' hat Zugriff auf diese Seite.</p>
+    </div>
+
+    <script>
+        const currentUser = sessionStorage.getItem('loggedInUser');
+
+        if (!currentUser || currentUser !== 'admin') {
+            alert("Zugriff verweigert! Nur der Benutzer 'admin' darf diese Seite sehen.");
+            window.location.href = 'login_benutzer.html';
+        }
+
+        function loadUsers() {
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const list = document.getElementById('userList');
+            list.innerHTML = '';
+
+            users.forEach(user => {
+                const li = document.createElement('li');
+                li.textContent = user.username;
+
+                if (user.username !== 'admin') {
+                    const btn = document.createElement('button');
+                    btn.textContent = 'Löschen';
+                    btn.className = 'btn-delete';
+                    btn.onclick = () => deleteUser(user.username);
+                    li.appendChild(btn);
+                }
+
+                list.appendChild(li);
+            });
+        }
+
+        function deleteUser(username) {
+            if (confirm(`Benutzer "${username}" wirklich löschen?`)) {
+                let users = JSON.parse(localStorage.getItem('users')) || [];
+                users = users.filter(u => u.username !== username);
+                localStorage.setItem('users', JSON.stringify(users));
+                loadUsers();
+            }
+        }
+
+        function logout() {
+            sessionStorage.removeItem('loggedInUser');
+            window.location.href = 'login_admin.html';
+        }
+
+        loadUsers();
+
+        // Rechtsklick deaktivieren
+        document.addEventListener('contextmenu', e => e.preventDefault());
+    </script>
+</body>
+</html>

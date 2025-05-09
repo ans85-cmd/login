@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login & Registrierung</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: sans-serif;
+            background: linear-gradient(to right, #00c6ff, #0072ff);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            width: 90%;
+            max-width: 400px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        input, button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #0072ff;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0057cc;
+        }
+
+        #error-message, #success-message {
+            color: red;
+            text-align: center;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        #success-message {
+            color: green;
+        }
+
+        .section-title {
+            margin-top: 30px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Login</h2>
+        <form id="loginForm">
+            <input type="text" id="login-username" placeholder="Benutzername" required>
+            <input type="password" id="login-password" placeholder="Passwort" required>
+            <div id="error-message"></div>
+            <button type="submit">Anmelden</button>
+        </form>
+
+        <div class="section-title">
+            <h2>Registrieren</h2>
+            <input type="text" id="register-username" placeholder="Neuer Benutzername">
+            <input type="password" id="register-password" placeholder="Neues Passwort">
+            <div id="success-message"></div>
+            <button onclick="registerUser()">Benutzer erstellen</button>
+        </div>
+    </div>
+
+    <script>
+        const getUsers = () => {
+            return JSON.parse(localStorage.getItem('users')) || [];
+        };
+
+        const saveUsers = (users) => {
+            localStorage.setItem('users', JSON.stringify(users));
+        };
+
+        function registerUser() {
+            const username = document.getElementById('register-username').value.trim();
+            const password = document.getElementById('register-password').value.trim();
+            const successMsg = document.getElementById('success-message');
+            const errorMsg = document.getElementById('error-message');
+
+            successMsg.textContent = '';
+            errorMsg.textContent = '';
+
+            if (!username || !password) {
+                errorMsg.textContent = 'Bitte alle Felder ausfüllen.';
+                return;
+            }
+
+            let users = getUsers();
+            if (users.find(u => u.username === username)) {
+                errorMsg.textContent = 'Benutzername existiert bereits.';
+                return;
+            }
+
+            users.push({ username, password });
+            saveUsers(users);
+
+            successMsg.textContent = 'Benutzer erfolgreich erstellt.';
+            document.getElementById('register-username').value = '';
+            document.getElementById('register-password').value = '';
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const username = document.getElementById('login-username').value.trim();
+            const password = document.getElementById('login-password').value.trim();
+            const users = getUsers();
+            const user = users.find(u => u.username === username && u.password === password);
+
+            if (user) {
+                sessionStorage.setItem('loggedInUser', username);
+                window.location.href = 'admin.html';
+            } else {
+                document.getElementById('error-message').textContent = 'Login fehlgeschlagen!';
+            }
+        });
+
+        // Rechtsklick deaktivieren
+        document.addEventListener('contextmenu', e => e.preventDefault());
+    </script>
+</body>
+</html>

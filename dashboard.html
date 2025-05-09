@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .box {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 400px;
+            margin: auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin-top: 20px;
+            margin-right: 10px;
+            border: none;
+            border-radius: 6px;
+            background-color: #0072ff;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0057cc;
+        }
+
+        .danger {
+            background-color: #e74c3c;
+        }
+
+        .danger:hover {
+            background-color: #c0392b;
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h1 id="welcome-message">Willkommen!</h1>
+        <button onclick="logout()">Abmelden</button>
+        <button class="danger" onclick="deleteUser()">Benutzer löschen</button>
+    </div>
+
+    <script>
+        const username = sessionStorage.getItem('loggedInUser');
+
+        if (!username) {
+            window.location.href = 'login_benutzer.html';
+        } else {
+            document.getElementById('welcome-message').textContent = `Willkommen, ${username}!`;
+        }
+
+        function logout() {
+            sessionStorage.removeItem('loggedInUser');
+            window.location.href = 'login_benutzer.html';
+        }
+
+        function deleteUser() {
+            if (!confirm('Möchtest du deinen Benutzer wirklich löschen?')) return;
+
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const filtered = users.filter(u => u.username !== username);
+            localStorage.setItem('users', JSON.stringify(filtered));
+            logout();
+        }
+
+        // Rechtsklick deaktivieren
+        document.addEventListener('contextmenu', e => e.preventDefault());
+    </script>
+</body>
+</html>

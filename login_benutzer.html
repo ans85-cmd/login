@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Benutzer-Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to right, #ffe5e5, #f5b7b1);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      background-color: white;
+      padding: 40px 30px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      width: 90%;
+      max-width: 400px;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #333;
+    }
+
+    .input-group {
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+
+    input:focus {
+      border-color: #e74c3c;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      border-radius: 8px;
+      border: none;
+      background-color: #e74c3c;
+      color: white;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #c0392b;
+    }
+
+    #error-message {
+      color: red;
+      text-align: center;
+      font-size: 14px;
+      margin-top: 10px;
+    }
+
+    .no-register {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 14px;
+      color: #666;
+    }
+
+    .no-register a {
+      color: #e74c3c;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    @media (max-width: 400px) {
+      .container {
+        padding: 30px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Benutzer-Login</h2>
+    <form id="loginForm">
+      <div class="input-group">
+        <input type="text" id="login-username" placeholder="Benutzername" required />
+      </div>
+      <div class="input-group">
+        <input type="password" id="login-password" placeholder="Passwort" required />
+      </div>
+      <div id="error-message"></div>
+      <button type="submit">Anmelden</button>
+    </form>
+    <div class="no-register">
+      Kein Konto? Bitte wende dich an den <strong>Administrator</strong>.
+    </div>
+  </div>
+
+  <script>
+    const getUsers = () => {
+      return JSON.parse(localStorage.getItem('users')) || [];
+    };
+
+    document.getElementById('loginForm').addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      const username = document.getElementById('login-username').value.trim();
+      const password = document.getElementById('login-password').value.trim();
+      const users = getUsers();
+      const user = users.find(u => u.username === username && u.password === password);
+
+      if (user) {
+        sessionStorage.setItem('loggedInUser', username);
+        window.location.href = 'dashboard.html';
+      } else {
+        document.getElementById('error-message').textContent = 'Benutzername oder Passwort ist falsch!';
+      }
+    });
+
+    // Rechtsklick deaktivieren
+    document.addEventListener('contextmenu', e => e.preventDefault());
+  </script>
+</body>
+</html>
