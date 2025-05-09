@@ -6,82 +6,77 @@
     <title>Dashboard</title>
     <style>
         body {
+            font-family: Arial, sans-serif;
+            background-color: #eef2f3;
             margin: 0;
-            font-family: sans-serif;
-            background-color: #f4f4f4;
-            text-align: center;
-            padding: 40px;
+            padding: 0;
         }
 
-        .box {
-            background: white;
+        .navbar {
+            background-color: #4CAF50;
+            padding: 15px;
+            color: white;
+            text-align: center;
+        }
+
+        .container {
+            padding: 30px;
+        }
+
+        .card {
+            background-color: white;
             padding: 20px;
             border-radius: 8px;
-            max-width: 400px;
-            margin: auto;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            max-width: 600px;
+            margin: 0 auto;
         }
 
         h1 {
+            text-align: center;
             color: #333;
         }
 
-        button {
+        p {
+            text-align: center;
+            color: #666;
+        }
+
+        .logout-button {
+            display: block;
+            margin: 30px auto 0;
             padding: 10px 20px;
-            margin-top: 20px;
-            margin-right: 10px;
-            border: none;
-            border-radius: 6px;
-            background-color: #0072ff;
+            background-color: #f44336;
             color: white;
+            border: none;
+            border-radius: 5px;
             cursor: pointer;
+            text-align: center;
         }
 
-        button:hover {
-            background-color: #0057cc;
-        }
-
-        .danger {
-            background-color: #e74c3c;
-        }
-
-        .danger:hover {
-            background-color: #c0392b;
+        .logout-button:hover {
+            background-color: #d32f2f;
         }
     </style>
 </head>
 <body>
-    <div class="box">
-        <h1 id="welcome-message">Willkommen!</h1>
-        <button onclick="logout()">Abmelden</button>
-        <button class="danger" onclick="deleteUser()">Benutzer löschen</button>
+    <div class="navbar">
+        Willkommen im Dashboard
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <h1>Hallo, Admin!</h1>
+            <p>Du hast dich erfolgreich eingeloggt.</p>
+            <button class="logout-button" onclick="logout()">Abmelden</button>
+        </div>
     </div>
 
     <script>
-        const username = sessionStorage.getItem('loggedInUser');
-
-        if (!username) {
-            window.location.href = 'login_benutzer.html';
-        } else {
-            document.getElementById('welcome-message').textContent = `Willkommen, ${username}!`;
-        }
-
         function logout() {
-            sessionStorage.removeItem('loggedInUser');
-            window.location.href = 'login_benutzer.html';
+            alert("Du wurdest ausgeloggt.");
+            window.location.href = "login.html"; // Zurück zur Login-Seite
         }
-
-        function deleteUser() {
-            if (!confirm('Möchtest du deinen Benutzer wirklich löschen?')) return;
-
-            const users = JSON.parse(localStorage.getItem('users')) || [];
-            const filtered = users.filter(u => u.username !== username);
-            localStorage.setItem('users', JSON.stringify(filtered));
-            logout();
-        }
-
-        // Rechtsklick deaktivieren
-        document.addEventListener('contextmenu', e => e.preventDefault());
     </script>
 </body>
 </html>
